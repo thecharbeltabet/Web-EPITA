@@ -11,6 +11,10 @@ services:
     image: mongo-express
     ports:
       - 8081:8081
+
+    volumes:
+      - ./mongo:/data/db
+
     depends_on:
       - mongo
     restart: on-failure
@@ -25,13 +29,14 @@ services:
       context: .
       dockerfile: ./node/Dockerfile
     ports: 
-    - 3000:3000
-    depends_on:
-    - mongo
+    - "3000:3000"
     volumes:
       - ./server:/app
+    depends_on:
+    - mongo
     environment:
       APP_PORT: '3000'
+      MONGO_DB: "mongodb://root:root@mongo:27017/epita?authSource=admin"
 
 
 
