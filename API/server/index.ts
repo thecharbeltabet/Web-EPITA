@@ -4,6 +4,7 @@ import express, {Request, Response} from 'express'
 import { exit } from 'process';
 import authRouter from './routes/auth'
 const mongoose = require("mongoose");
+import todoRouter from './routes/todo';
 
 
 const morgan = require('morgan');
@@ -44,6 +45,7 @@ app.get('/', (request: Request, response: Response): void => {
 });
 
 app.use('/auth', authRouter);
+app.use('/todos',todoRouter);
 
 app.listen(process.env.APP_PORT, () => {
     console.log(`Server Running on http://localhost:${process.env.APP_PORT}`);
