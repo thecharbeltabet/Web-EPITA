@@ -1,10 +1,9 @@
-import mongoose, {Schema } from 'mongoose';
+import { Schema, model, Types } from 'mongoose'
 
-const todoSchema = new mongoose.Schema({
-
+const todoSchema = new Schema({
     label: {
         type: String,
-        require: true,
+        required: true,
         trim: true
     },
     description: {
@@ -12,7 +11,10 @@ const todoSchema = new mongoose.Schema({
         required: false,
         trim: true
     },
-
+    user: {
+        type: Types.ObjectId,
+        ref: 'User'
+    },
 }, {
     timestamps: {
         createdAt: 'created_at',
@@ -20,4 +22,4 @@ const todoSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model('todo', todoSchema);
+export default model('Todo', todoSchema);
