@@ -1,11 +1,12 @@
 import express, {Request, Response} from 'express';
+import bcrypt from 'bcrypt';
 
 import useModel from '../models/userModel';
 import { User } from '../types/User';
 
 let Router = express.Router();
 
-Router.post('/register', async (request: Request, response: Response): Promise<express.Response<any, Record<string, any>>> => {
+Router.post('/register', async (request: Request, response: Response): Promise<Response> => {
     console.log(request.body);
     const { email, email_cfg, password, password_cfg } = request.body;
 
@@ -19,10 +20,10 @@ Router.post('/register', async (request: Request, response: Response): Promise<e
             return response.status(500).json({"msg": "Email or password confirmation are not valid !"});
         }
 
-        const user = await <User|void>useModel.create({
+        const user: User|void = await <User|void>useModel.create({
             email,
-            "password": password
-        }, (error) => {
+            "password": bcrypt.hashSync(password,10) 
+        }, (error: any) => {
             if (error) return response.status(500).json({"msg": "User not create"})
 
             return response.status(200).json(user)
@@ -37,7 +38,7 @@ Router.post('/register', async (request: Request, response: Response): Promise<e
     return response.status(200).json('Register page');
 });
 
-Router.post('/login', async (request: Request, response: Response): Promise<express.Response<any, Record<string, any>>> => {
+Router.post('/login', async (request: Request, response: Response): Promise<Response> => {
     console.log(request.body);
     const { email, password } = request.body;
 
@@ -47,8 +48,8 @@ Router.post('/login', async (request: Request, response: Response): Promise<expr
     ) {
             let user = await useModel.findOne({email})
 
-
-            if (user.password == password) {
+            if(!user) return response.status(500).json({"msg":"Email"})
+            if (bcrypt.compareSync(password,user.password)) {
                 return response.status(200).json(user);
             }
 

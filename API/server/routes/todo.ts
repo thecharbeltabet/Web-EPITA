@@ -1,5 +1,3 @@
-
-
 import express, {Request, Response} from 'express';
 
 import todoModel from '../models/todoModel';
